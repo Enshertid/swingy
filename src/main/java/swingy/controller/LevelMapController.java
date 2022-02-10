@@ -1,24 +1,19 @@
 package swingy.controller;
 
-import jdk.swing.interop.SwingInterOpUtils;
 import swingy.model.character.Coordinate;
 import swingy.model.character.hero.Hero;
 import swingy.model.map.MapModel;
 import swingy.utils.ActionResult;
 import swingy.utils.ViewMode;
+import swingy.utils.algorithms.RunAlgo;
 import swingy.utils.algorithms.fight.FightAlgo;
 import swingy.utils.algorithms.random.Randomizers;
-import swingy.utils.button.console.ButtonPressHandler;
-import swingy.utils.button.console.fight.ButtonPressFightHandler;
-import swingy.utils.button.console.map.ButtonPressMapHandler;
+import swingy.view.console.ConsoleButtonPressHandler;
 import swingy.utils.exceptions.BreakGameFromKeyboardException;
 import swingy.utils.exceptions.LooseGameException;
-import swingy.utils.exceptions.WonGameException;
 import swingy.view.LevelMapView;
 import swingy.view.console.LevelMapConsoleView;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,7 +23,7 @@ import static swingy.Game.mainConfig;
 
 public class LevelMapController {
 
-    private ButtonPressHandler buttonPressMapHandler;
+    private ConsoleButtonPressHandler buttonPressHandler;
     private LevelMapView levelMapView;
     private Randomizers randomizers;
     private MapModel mapModel;
@@ -39,12 +34,12 @@ public class LevelMapController {
         if (viewMode.equals(ViewMode.CONSOLE)) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
             levelMapView = new LevelMapConsoleView();
-            buttonPressMapHandler = new ButtonPressMapHandler(bufferedReader);
+            buttonPressHandler = new ConsoleButtonPressHandler(bufferedReader);
         }
         this.randomizers = new Randomizers();
     }
 
-    public void gameCycle(Hero character) throws WonGameException, LooseGameException, IOException, BreakGameFromKeyboardException {
+    public void gameCycle(Hero character) throws LooseGameException, IOException, BreakGameFromKeyboardException, InterruptedException {
         boolean isLevelWon = true;
         while (character.getLevel() < 15) {
             if (isLevelWon) {
@@ -57,7 +52,7 @@ public class LevelMapController {
             var result = handleButtonPressings(character);
 
             if (result == ActionResult.GAME_WON) {
-                System.out.println("you won game, congrats!");
+                levelMapView.printWonGame();
                 System.exit(0);
                 // won game
             } else if (result == ActionResult.LEVEL_WON) {
@@ -81,37 +76,47 @@ public class LevelMapController {
         levelMapView.printMap(mapModel);
     }
 
-    private ActionResult handleButtonPressings(Hero character) throws IOException, BreakGameFromKeyboardException, WonGameException, LooseGameException {
-        var result = buttonPressMapHandler.handleButtonClick(character, mapModel);
-
+    private ActionResult handleButtonPressings(Hero character) throws IOException, BreakGameFromKeyboardException, LooseGameException, InterruptedException {
+        var result = buttonPressHandler.handleMapMoveClick(character, mapModel);
         if (result.equals(ActionResult.MEET_ENEMY)) {
-            clearScreen();
-            System.out.println("you meet some enemy this is his characteristics");
-            mapModel.getCharacter(character.getCoordinate()).printCharacteristics();
-            System.out.println("yours characteristics is");
-            character.printCharacteristics();
-            System.out.println("do you want to fight, or try to run");
-            System.out.println("press R for run, or press F for pay resp.. fight");
-            var choiceRunOfFight = buttonPressMapHandler.handleButtonClick(character, mapModel);
-            if (
-                    (choiceRunOfFight.equals(ActionResult.TRY_TO_RUN) && !randomizers.runOrFight())
-                            ||
-                    (choiceRunOfFight.equals(ActionResult.BATTLE_START))) {
-                System.out.println("FIGHT");
-                FightAlgo.fight(character, mapModel.getCharacter(character.getCoordinate()));
-                result = ActionResult.NOTHING_IMPORTANT;
-            } else {
-                var offset = 1;
-                System.out.println("RUN");
-                var runningResult = character.characterStatusAfterChangeCoordinate(mapModel,  character.runningAway(mapModel, offset));
-                while (runningResult.equals(ActionResult.MEET_ENEMY)) {
-                    runningResult = character.characterStatusAfterChangeCoordinate(mapModel, character.runningAway(mapModel, ++offset));
-                }
-                result = runningResult;
-            }
+           result = battleHandling(character);
         }
         return result;
     }
+
+    private ActionResult battleHandling(Hero character) throws IOException, BreakGameFromKeyboardException, InterruptedException, LooseGameException {
+        clearScreen();
+        levelMapView.printFightDescription(mapModel, character);
+        var choiceRunOfFight = buttonPressHandler.choiceRunOrFight(character, mapModel);
+        clearScreen();
+
+        if ((choiceRunOfFight.equals(ActionResult.TRY_TO_RUN) && !randomizers.runOrFight()) || (choiceRunOfFight.equals(ActionResult.BATTLE_START))) {
+            if (choiceRunOfFight.equals(ActionResult.TRY_TO_RUN)) {
+                levelMapView.printFailedRun();
+            }
+            FightAlgo.fight(character, mapModel.getCharacter(character.getCoordinate()));
+            artifactHandling(character);
+            levelMapView.printWonBattle();
+            mapModel.removeCharacterFromMap(character.getCoordinate());
+        } else {
+            RunAlgo.run(character, mapModel);
+            levelMapView.printSuccessRun();
+        }
+        return ActionResult.NOTHING_IMPORTANT;
+    }
+
+    private void artifactHandling(Hero character) throws IOException, BreakGameFromKeyboardException {
+        var artifact = mapModel.getCharacter(character.getCoordinate()).getArtifact();
+        if (artifact != null) {
+            levelMapView.printArtifactDescription(character, artifact);
+            ActionResult actionResult = buttonPressHandler.choiceTakeArtifactOrNot(character, artifact);
+            if (actionResult.equals(ActionResult.PICK_UP_ARTIFACT)) {
+                character.setArtifact(artifact);
+                levelMapView.printArtifactSuccessfulPickingUp();
+            }
+        }
+    }
+
 
     private void clearScreen() {
         levelMapView.clean();

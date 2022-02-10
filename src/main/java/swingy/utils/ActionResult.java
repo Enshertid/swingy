@@ -7,5 +7,7 @@ public enum ActionResult {
     MEET_ENEMY,
     BATTLE_START,
     TRY_TO_RUN,
-    NOTHING_IMPORTANT;
+    NOTHING_IMPORTANT,
+    ARTIFACT,
+    PICK_UP_ARTIFACT;
 }

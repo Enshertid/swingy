@@ -1,12 +1,16 @@
 package swingy.view;
 
-import swingy.model.character.Character;
-import swingy.model.character.Coordinate;
+import swingy.model.character.Artifact;
+import swingy.model.character.hero.Hero;
 import swingy.model.map.MapModel;
-import swingy.utils.map.MapObjectType;
-
-import java.util.Map;
 
 public interface LevelMapView extends View{
     void printMap(MapModel mapModel);
+    void printFightDescription(MapModel mapModel, Hero character);
+    void printFailedRun() throws InterruptedException;
+    void printWonBattle() throws InterruptedException;
+    void printSuccessRun() throws InterruptedException;
+    void printWonGame() throws InterruptedException;
+    void printArtifactDescription(Hero character, Artifact artifact);
+    void printArtifactSuccessfulPickingUp();
 }

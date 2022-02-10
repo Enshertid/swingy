@@ -71,8 +71,8 @@ public class Hero extends Character {
     private Coordinate getNewCoordinate(int offset) {
         boolean offsetSightX = random.plusOrMinus();
         boolean offsetSightY = random.plusOrMinus();
-        int offsetY = random.getOffset();
-        int offsetX = random.getOffset();
+        int offsetY = random.getOffset() + 1;
+        int offsetX = random.getOffset() + 1;
 
         var currentCoordinate = getCoordinate();
         var newCoordinate = new Coordinate(0,0);

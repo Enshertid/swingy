@@ -7,6 +7,8 @@ public abstract class Character {
 
     private Coordinate coordinate;
 
+    private Artifact artifact;
+
     private ActualAndMaxValuePair<Integer, Integer> hp;
     private ActualAndMaxValuePair<Integer, Integer> mp;
 
@@ -70,4 +72,11 @@ public abstract class Character {
         System.out.printf("hp == %s, mp == %s, attack == %s, defence == %s%n", getHp(), getHp(), getAttackStrength(), getDefenceStrength());
     }
 
+    public Artifact getArtifact() {
+        return artifact;
+    }
+
+    public void setArtifact(Artifact artifact) {
+        this.artifact = artifact;
+    }
 }
