@@ -8,3 +8,8 @@
 /dataSources.local.xml
 /target/*
 /.idea/*
+/compiler.xml
+/jarRepositories.xml
+/misc.xml
+/uiDesigner.xml
+/vcs.xml
