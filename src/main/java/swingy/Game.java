@@ -34,7 +34,6 @@ public class Game {
         try {
             var cl = Game.class.getClassLoader();
             var inputStream = cl.getResourceAsStream("application.properties");
-//            FileInputStream a = new FileInputStream("application.properties");
             properties.load(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,11 +46,10 @@ public class Game {
                 levelMapController.gameCycle(character);
             } catch (BreakGameFromKeyboardException exception) {
                 System.out.println("you break the game, goodbye!");
+                DAOFactory.getHeroDAO().update(CharacterMapper.toEntity(character));
                 System.exit(0);
-                //method for saving data in storage
             } catch (LooseGameException exception) {
                 System.out.println("you loose game, goodbye");
-                //method for cleaning data;
             } catch (Exception exception) {
                 System.out.println("unexpected exception:");
                 exception.printStackTrace();

@@ -13,15 +13,14 @@ import javax.persistence.*;
 public class Artifact {
     @Id
     @Column(name = "artifact_id", nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "artifactSequence")
-    @SequenceGenerator(name = "artifactSequence", sequenceName = "artifact_id", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Enumerated
     @Column(name = "artifact_type")
     private ArtifactType artifactType;
 
-    @Column(name = "bonus_to_attribute")
+    @Column(name = "bonus")
     private int bonus;
 
     @ManyToOne
