@@ -39,11 +39,11 @@ public class ConsoleButtonPressHandler implements ButtonHandler {
     public ActionResult choiceTakeArtifactOrNot(Hero character, Artifact artifact) throws IOException, BreakGameFromKeyboardException {
         String takeOrNot;
         while (!yesOrNo(takeOrNot = bufferedReader.readLine())) {
-            System.out.println("press yes or no for pick artifact");
+            System.out.println("press y or n for pick artifact");
         }
-        if (takeOrNot.equals("yes")) {
+        if (takeOrNot.equals("Y")) {
             return ActionResult.PICK_UP_ARTIFACT;
-        } else if (takeOrNot.equals("no")) {
+        } else if (takeOrNot.equals("N")) {
             return ActionResult.NOTHING_IMPORTANT;
         } else {
             throw new BreakGameFromKeyboardException("you print 'exit' it's means that you want to break the game");
@@ -52,7 +52,7 @@ public class ConsoleButtonPressHandler implements ButtonHandler {
 
 
     private boolean yesOrNo(String s) {
-        return (s.equals("yes")) || (s.equals("no")) || (s.equals("exit"));
+        return (s.equals("Y")) || (s.equals("N")) || (s.equals("exit"));
     }
 
     private boolean isButtonFight(String s) {
@@ -82,7 +82,7 @@ public class ConsoleButtonPressHandler implements ButtonHandler {
         return input.equals("exit");
     }
 
-    public ActionResult handleExtendedButtonsClick(String key, Hero character, MapModel mapModel) throws BreakGameFromKeyboardException {
+    public ActionResult handleExtendedButtonsClick(String key, Hero character, MapModel mapModel) {
         mapModel.removeCharacterFromMap(character.getCoordinate());
 
         switch (key) {

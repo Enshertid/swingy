@@ -47,7 +47,7 @@ public class LevelMapConsoleView extends ConsoleView implements LevelMapView {
         } else {
             System.out.println("do you want to take artifact?");
         }
-        System.out.println("print yes or no");
+        System.out.println("print Y or N");
     }
 
     @Override
@@ -96,6 +96,18 @@ public class LevelMapConsoleView extends ConsoleView implements LevelMapView {
     @Override
     public void printWonGame() throws InterruptedException {
         System.out.println("YOU WON GAME, CONGRATULATIONS!");
+        Thread.sleep(2000);
+    }
+
+    @Override
+    public void printMessageAboutCleanMap() throws InterruptedException {
+        System.out.println("you clean map, and get bonus 500 experience for that!");
+        Thread.sleep(2000);
+    }
+
+    @Override
+    public void printLevelUp(int level, int maxLevel) throws InterruptedException {
+        System.out.println("your current level is " + level + " for won this game, up level to " + maxLevel);
         Thread.sleep(2000);
     }
 }

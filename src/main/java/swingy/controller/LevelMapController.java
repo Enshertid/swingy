@@ -25,8 +25,7 @@ public class LevelMapController {
 
     private ConsoleButtonPressHandler buttonPressHandler;
     private LevelMapView levelMapView;
-    private Randomizers randomizers;
-    private MapModel mapModel;
+    private final MapModel mapModel;
 
     public LevelMapController() {
         mapModel = new MapModel(new HashMap<>(), 0);
@@ -36,7 +35,6 @@ public class LevelMapController {
             levelMapView = new LevelMapConsoleView();
             buttonPressHandler = new ConsoleButtonPressHandler(bufferedReader);
         }
-        this.randomizers = new Randomizers();
     }
 
     public void gameCycle(Hero character) throws LooseGameException, IOException, BreakGameFromKeyboardException, InterruptedException {
@@ -57,7 +55,12 @@ public class LevelMapController {
                 // won game
             } else if (result == ActionResult.LEVEL_WON) {
                 isLevelWon = true;
-                continue;
+                if (mapModel.isMapEmpty()) {
+                    levelMapView.printMessageAboutCleanMap();
+                    if (character.updateExperienceAndUpLevelIfCup(500)) {
+                        levelMapView.printLevelUp(character.getLevel(), character.getMaxLevel());
+                    }
+                }
             }
             clearScreen();
         }
@@ -66,7 +69,7 @@ public class LevelMapController {
     private void reloadMap(int level) {
         mapModel.setMapSize((level - 1) * 5 + 9);
         mapModel.removeAllCharacters();
-        for (var entry : randomizers.getVillainsDependingOnMapSizeAndHeroLevel(mapModel.getMapSize(), level).entrySet()) {
+        for (var entry : Randomizers.getVillainsDependingOnMapSizeAndHeroLevel(mapModel.getMapSize(), level).entrySet()) {
             mapModel.addCharacterOnMap(entry.getKey(), entry.getValue());
         }
     }
@@ -90,11 +93,13 @@ public class LevelMapController {
         var choiceRunOfFight = buttonPressHandler.choiceRunOrFight(character, mapModel);
         clearScreen();
 
-        if ((choiceRunOfFight.equals(ActionResult.TRY_TO_RUN) && !randomizers.runOrFight()) || (choiceRunOfFight.equals(ActionResult.BATTLE_START))) {
+        if ((choiceRunOfFight.equals(ActionResult.TRY_TO_RUN) && !Randomizers.runOrFight()) || (choiceRunOfFight.equals(ActionResult.BATTLE_START))) {
             if (choiceRunOfFight.equals(ActionResult.TRY_TO_RUN)) {
                 levelMapView.printFailedRun();
             }
-            FightAlgo.fight(character, mapModel.getCharacter(character.getCoordinate()));
+            if (FightAlgo.fight(character, mapModel.getCharacter(character.getCoordinate()))) {
+                levelMapView.printLevelUp(character.getLevel(), character.getMaxLevel());
+            }
             artifactHandling(character);
             levelMapView.printWonBattle();
             mapModel.removeCharacterFromMap(character.getCoordinate());

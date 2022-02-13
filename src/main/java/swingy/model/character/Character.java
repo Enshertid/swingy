@@ -1,6 +1,5 @@
 package swingy.model.character;
 
-import swingy.utils.ActualAndMaxValuePair;
 import swingy.utils.map.MapObjectType;
 
 public abstract class Character {
@@ -9,8 +8,10 @@ public abstract class Character {
 
     private Artifact artifact;
 
-    private ActualAndMaxValuePair<Integer, Integer> hp;
-    private ActualAndMaxValuePair<Integer, Integer> mp;
+    private int expForWin;
+
+    private int hp;
+    private int maxHp;
 
     private int attackStrength;
     private int defenceStrength;
@@ -20,20 +21,20 @@ public abstract class Character {
         this.mapObjectType = mapObjectType;
     }
 
-    public ActualAndMaxValuePair<Integer, Integer> getHp() {
+    public int getExpForWin() {
+        return expForWin;
+    }
+
+    public void setExpForWin(int expForWin) {
+        this.expForWin = expForWin;
+    }
+
+    public int getHp() {
         return hp;
     }
 
-    public void setHp(ActualAndMaxValuePair<Integer, Integer> hp) {
+    public void setHp(int hp) {
         this.hp = hp;
-    }
-
-    public ActualAndMaxValuePair<Integer, Integer> getMp() {
-        return mp;
-    }
-
-    public void setMp(ActualAndMaxValuePair<Integer, Integer> mp) {
-        this.mp = mp;
     }
 
     public int getAttackStrength() {
@@ -66,6 +67,14 @@ public abstract class Character {
 
     public void setMapObjectType(MapObjectType mapObjectType) {
         this.mapObjectType = mapObjectType;
+    }
+
+    public int getMaxHp() {
+        return maxHp;
+    }
+
+    public void setMaxHp(int maxHp) {
+        this.maxHp = maxHp;
     }
 
     public void printCharacteristics() {

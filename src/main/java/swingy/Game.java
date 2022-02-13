@@ -14,11 +14,16 @@ public class Game {
 
     public static void main(String[] args) {
         validateStartInput(args);
+        
+        readConfigFileIfItExists();
 
         Hero character = generateCharacter();
         LevelMapController levelMapController = new LevelMapController();
 
         launchGameAndHandleResult(character, levelMapController);
+    }
+
+    private static void readConfigFileIfItExists() {
     }
 
     private static void launchGameAndHandleResult(Hero character, LevelMapController levelMapController) {

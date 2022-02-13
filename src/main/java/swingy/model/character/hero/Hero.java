@@ -11,14 +11,43 @@ public class Hero extends Character {
     private int level;
     private String name;
     private int curExperience;
+    private int expCupForLevel;
     private int maxLevel;
-    private final Randomizers random = new Randomizers();
 
     public Hero(String name) {
         super(MapObjectType.HERO);
         this.name = name;
         this.curExperience = 0;
         this.level = 1;
+        this.setHp(15);
+        this.setAttackStrength(5);
+        this.setDefenceStrength(5);
+    }
+
+    public int getExpCupForLevel() {
+        return expCupForLevel;
+    }
+
+    public void setExpCupForLevel(int expCupForLevel) {
+        this.expCupForLevel = expCupForLevel;
+    }
+
+    public boolean updateExperienceAndUpLevelIfCup(int bonusExp) {
+        this.curExperience += bonusExp;
+        if (curExperience >= expCupForLevel) {
+            upLevel();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int getMaxLevel() {
+        return maxLevel;
+    }
+
+    public void setMaxLevel(int maxLevel) {
+        this.maxLevel = maxLevel;
     }
 
     public int getLevel() {
@@ -55,10 +84,11 @@ public class Hero extends Character {
 
     public ActionResult characterStatusAfterChangeCoordinate(MapModel mapModel, Coordinate coordinate) {
 
+        setCoordinate(coordinate);
         if (coordinate.getX() < 0
                 || coordinate.getY() < 0
-                || coordinate.getX() > mapModel.getMapSize()
-                || coordinate.getY() > mapModel.getMapSize() ){
+                || coordinate.getX() >= mapModel.getMapSize()
+                || coordinate.getY() >= mapModel.getMapSize() ){
             return isMaxLevel() ? ActionResult.GAME_WON : ActionResult.LEVEL_WON;
         } else if (mapModel.getCharacter(getCoordinate()) != null) {
             return ActionResult.MEET_ENEMY;
@@ -69,23 +99,32 @@ public class Hero extends Character {
     }
 
     private Coordinate getNewCoordinate(int offset) {
-        boolean offsetSightX = random.plusOrMinus();
-        boolean offsetSightY = random.plusOrMinus();
-        int offsetY = random.getOffset() + 1;
-        int offsetX = random.getOffset() + 1;
+        boolean offsetSightX = Randomizers.plusOrMinus();
+        boolean offsetSightY = Randomizers.plusOrMinus();
+        int offsetY = Randomizers.getOffset(offset);
+        int offsetX = Randomizers.getOffset(offset);
 
         var currentCoordinate = getCoordinate();
         var newCoordinate = new Coordinate(0,0);
         if (offsetSightX) {
-            newCoordinate.setX(currentCoordinate.getX() + offsetX);
+            newCoordinate.setX(currentCoordinate.getX() + offsetX + 1);
         } else {
-            newCoordinate.setX(currentCoordinate.getX() - offsetX);
+            newCoordinate.setX(currentCoordinate.getX() - offsetX - 1);
         }
         if (offsetSightY) {
-            newCoordinate.setY(currentCoordinate.getY() + offsetY);
+            newCoordinate.setY(currentCoordinate.getY() + offsetY + 1);
         } else {
-            newCoordinate.setY(currentCoordinate.getY() - offsetY);
+            newCoordinate.setY(currentCoordinate.getY() - offsetY - 1);
         }
         return newCoordinate;
+    }
+
+    public void upLevel() {
+        setLevel(getLevel() + 1);
+        setHp(getHp() + 10);
+        setMaxHp(getMaxHp() + 10);
+        setAttackStrength(getAttackStrength() + 5);
+        setDefenceStrength(getDefenceStrength() + 5);
+        setExpCupForLevel(getExpCupForLevel() + 500);
     }
 }

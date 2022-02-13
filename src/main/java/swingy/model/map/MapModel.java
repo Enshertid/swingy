@@ -32,6 +32,10 @@ public class MapModel {
         return charactersOnMap.get(coordinate);
     }
 
+    public boolean  isMapEmpty() {
+        return charactersOnMap.isEmpty();
+    }
+
     public void removeAllCharacters() {
         charactersOnMap.clear();
     }

@@ -11,6 +11,5 @@ import java.io.IOException;
 public interface ButtonHandler {
     ActionResult choiceRunOrFight(Hero character, MapModel mapModel) throws IOException, BreakGameFromKeyboardException;
     ActionResult handleMapMoveClick(Hero character, MapModel mapModel) throws IOException, BreakGameFromKeyboardException;
-
     ActionResult choiceTakeArtifactOrNot(Hero character, Artifact artifact) throws IOException, BreakGameFromKeyboardException;
 }
