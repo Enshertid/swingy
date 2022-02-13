@@ -1,6 +1,7 @@
 package swingy.utils.algorithms.random;
 
 import swingy.model.character.Artifact;
+import swingy.model.character.ArtifactType;
 import swingy.model.character.Character;
 import swingy.model.character.Coordinate;
 import swingy.model.character.villain.Villain;
@@ -38,9 +39,12 @@ public class Randomizers {
             villain.setDefenceStrength(randomCharacteristic(level, isSuperItem()));
             villain.setHp(randomCharacteristic(level, isSuperItem()));
             villain.setExpForWin(level * 250);
-            if (Randomizers.isSuperItem()) {
-                villain.setArtifact(new Artifact(level > 3 ? level - 1 : level, false));
-            }
+            if (Randomizers.isSuperItem())
+                villain.setArtifact(new Artifact(level > 3 ? level - 1 : level, false, ArtifactType.HELM));
+            if (Randomizers.isSuperItem())
+                villain.setArtifact(new Artifact(level > 3 ? level - 1 : level, false, ArtifactType.SWORD));
+            if (Randomizers.isSuperItem())
+                villain.setArtifact(new Artifact(level > 3 ? level - 1 : level, false, ArtifactType.ARMOR));
             retVal.put(coord, villain);
         }
 
@@ -95,5 +99,9 @@ public class Randomizers {
         } else {
             return randomizer.nextInt(level + 5);
         }
+    }
+
+    public static int getRandomDeath() {
+        return randomizer.nextInt(10000);
     }
 }

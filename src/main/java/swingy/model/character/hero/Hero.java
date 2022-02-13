@@ -8,7 +8,7 @@ import swingy.utils.algorithms.random.Randomizers;
 import swingy.utils.map.MapObjectType;
 
 public class Hero extends Character {
-    private int level;
+    private short level;
     private String name;
     private int curExperience;
     private int expCupForLevel;
@@ -18,8 +18,10 @@ public class Hero extends Character {
         super(MapObjectType.HERO);
         this.name = name;
         this.curExperience = 0;
+        this.setExpCupForLevel(1000);
         this.level = 1;
-        this.setHp(15);
+        this.setHp(10);
+        this.setMaxHp(10);
         this.setAttackStrength(5);
         this.setDefenceStrength(5);
     }
@@ -50,11 +52,11 @@ public class Hero extends Character {
         this.maxLevel = maxLevel;
     }
 
-    public int getLevel() {
+    public short getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(short level) {
         this.level = level;
     }
 
@@ -120,11 +122,12 @@ public class Hero extends Character {
     }
 
     public void upLevel() {
-        setLevel(getLevel() + 1);
+        setLevel((short) (getLevel() + 1));
         setHp(getHp() + 10);
         setMaxHp(getMaxHp() + 10);
         setAttackStrength(getAttackStrength() + 5);
         setDefenceStrength(getDefenceStrength() + 5);
-        setExpCupForLevel(getExpCupForLevel() + 500);
+        setExpCupForLevel(getLevel() * 1000 + (getLevel()-1) * (getLevel() - 1) * 450);
+        setCurExperience(0);
     }
 }

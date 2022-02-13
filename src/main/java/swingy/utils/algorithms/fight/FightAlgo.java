@@ -8,44 +8,54 @@ import swingy.utils.exceptions.LooseGameException;
 
 public class FightAlgo {
     public static boolean fight(Hero hero, Character enemy) throws LooseGameException {
-        var heroArtifact = hero.getArtifact();
-        var enemyArtifact = enemy.getArtifact();
-        if (heroArtifact == null)
-             hero.setArtifact(new Artifact(1, true));
-        if (enemyArtifact == null)
-            enemy.setArtifact(new Artifact(1, true));
+        hero.setEmptyArtifacts();
+        enemy.setEmptyArtifacts();
+
         int enemylowsHp;
         int heroLowsHp;
-        hero.setHp(hero.getArtifact().getHpBonus() + hero.getHp());
+        hero.setHp(hero.getHelm().getBonus() + hero.getHp());
+
+        var flag = false;
+
+        if (enemy.getDefenceStrength() == hero.getAttackStrength()) {
+            flag = true;
+            hero.setAttackStrength(hero.getAttackStrength() + 1);
+        }
+
         while (hero.getHp() > 0 || enemy.getHp() > 0) {
-            enemylowsHp = enemy.getDefenceStrength() + enemy.getArtifact().getDefenceBonus() * Randomizers.isEnemyUseArtifact() - hero.getAttackStrength() - hero.getArtifact().getAttackBonus();
+            enemylowsHp = enemy.getDefenceStrength() + enemy.getArmor().getBonus() * Randomizers.isEnemyUseArtifact() - hero.getAttackStrength() - hero.getSword().getBonus();
             if (enemylowsHp < 0) {
                 enemy.setHp(enemy.getHp() + enemylowsHp);
             } else {
                 enemy.setHp(enemy.getHp() - enemylowsHp);
             }
-           heroLowsHp = hero.getDefenceStrength() + hero.getArtifact().getDefenceBonus() - enemy.getAttackStrength() - enemy.getArtifact().getAttackBonus() * Randomizers.isEnemyUseArtifact();
+           heroLowsHp = hero.getDefenceStrength() + hero.getArmor().getBonus() - enemy.getAttackStrength() - enemy.getSword().getBonus() * Randomizers.isEnemyUseArtifact();
             if (enemy.getHp() < 0) {
                 break;
             }
             hero.setHp(hero.getHp() + heroLowsHp);
         }
 
-        if (hero.getArtifact().isEmpty()) {
-            hero.setArtifact(null);
-        }
-        if (enemy.getArtifact().isEmpty()) {
-            enemy.setArtifact(null);
-        }
+        hero.resetEmptyArtifacts();
+        enemy.resetEmptyArtifacts();
 
-        if (hero.getHp() < 0) {
+        if (hero.getHp() < 0 ) {
             throw new LooseGameException("you loose battle, game ends");
         }
+        if (Randomizers.getRandomDeath() == 5734) {
+            throw new LooseGameException("today is not your day, you loose, game over");
+        }
+
+        hero.setHp(hero.getMaxHp());
 
         hero.setCurExperience(hero.getCurExperience() + enemy.getExpForWin());
         if (hero.getCurExperience() >= hero.getExpCupForLevel()) {
             hero.upLevel();
             return true;
+        }
+        if (flag) {
+            hero.setAttackStrength(hero.getAttackStrength() - 1
+            );
         }
         return false;
 

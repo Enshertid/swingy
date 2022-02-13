@@ -1,5 +1,6 @@
 package swingy.controller;
 
+import swingy.model.character.Artifact;
 import swingy.model.character.Coordinate;
 import swingy.model.character.hero.Hero;
 import swingy.model.map.MapModel;
@@ -39,7 +40,7 @@ public class LevelMapController {
 
     public void gameCycle(Hero character) throws LooseGameException, IOException, BreakGameFromKeyboardException, InterruptedException {
         boolean isLevelWon = true;
-        while (character.getLevel() < 15) {
+        while (character.getLevel() < character.getMaxLevel()) {
             if (isLevelWon) {
                 reloadMap(character.getLevel());
                 character.setCoordinate(new Coordinate(mapModel.getMapSize() / 2, mapModel.getMapSize() / 2));
@@ -57,7 +58,7 @@ public class LevelMapController {
                 isLevelWon = true;
                 if (mapModel.isMapEmpty()) {
                     levelMapView.printMessageAboutCleanMap();
-                    if (character.updateExperienceAndUpLevelIfCup(500)) {
+                    if (character.updateExperienceAndUpLevelIfCup(250)) {
                         levelMapView.printLevelUp(character.getLevel(), character.getMaxLevel());
                     }
                 }
@@ -67,7 +68,10 @@ public class LevelMapController {
     }
 
     private void reloadMap(int level) {
-        mapModel.setMapSize((level - 1) * 5 + 9);
+        if (level < 7)
+            mapModel.setMapSize((level - 1) * 5 + 10);
+        else
+            mapModel.setMapSize(39);
         mapModel.removeAllCharacters();
         for (var entry : Randomizers.getVillainsDependingOnMapSizeAndHeroLevel(mapModel.getMapSize(), level).entrySet()) {
             mapModel.addCharacterOnMap(entry.getKey(), entry.getValue());
@@ -100,7 +104,7 @@ public class LevelMapController {
             if (FightAlgo.fight(character, mapModel.getCharacter(character.getCoordinate()))) {
                 levelMapView.printLevelUp(character.getLevel(), character.getMaxLevel());
             }
-            artifactHandling(character);
+            artifactAlgo(character);
             levelMapView.printWonBattle();
             mapModel.removeCharacterFromMap(character.getCoordinate());
         } else {
@@ -110,8 +114,16 @@ public class LevelMapController {
         return ActionResult.NOTHING_IMPORTANT;
     }
 
-    private void artifactHandling(Hero character) throws IOException, BreakGameFromKeyboardException {
-        var artifact = mapModel.getCharacter(character.getCoordinate()).getArtifact();
+    private void artifactAlgo(Hero character) throws IOException, BreakGameFromKeyboardException {
+        var armor = mapModel.getCharacter(character.getCoordinate()).getArmor();
+        var helm = mapModel.getCharacter(character.getCoordinate()).getHelm();
+        var sword = mapModel.getCharacter(character.getCoordinate()).getSword();
+        artifactHandling(armor, character);
+        artifactHandling(helm, character);
+        artifactHandling(sword, character);
+    }
+
+    private void artifactHandling(Artifact artifact, Hero character) throws IOException, BreakGameFromKeyboardException {
         if (artifact != null) {
             levelMapView.printArtifactDescription(character, artifact);
             ActionResult actionResult = buttonPressHandler.choiceTakeArtifactOrNot(character, artifact);

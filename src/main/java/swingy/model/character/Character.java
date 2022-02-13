@@ -2,11 +2,17 @@ package swingy.model.character;
 
 import swingy.utils.map.MapObjectType;
 
+import java.util.List;
+
 public abstract class Character {
 
     private Coordinate coordinate;
 
-    private Artifact artifact;
+    private Artifact armor;
+
+    private Artifact sword;
+
+    private Artifact helm;
 
     private int expForWin;
 
@@ -81,11 +87,59 @@ public abstract class Character {
         System.out.printf("hp == %s, mp == %s, attack == %s, defence == %s%n", getHp(), getHp(), getAttackStrength(), getDefenceStrength());
     }
 
-    public Artifact getArtifact() {
-        return artifact;
+    public Artifact getArmor() {
+        return armor;
+    }
+
+    public Artifact getSword() {
+        return sword;
+    }
+
+    public Artifact getHelm() {
+        return helm;
     }
 
     public void setArtifact(Artifact artifact) {
-        this.artifact = artifact;
+        if (artifact.getArtifactType() == ArtifactType.ARMOR) {
+            armor = artifact;
+        } else if (artifact.getArtifactType() == ArtifactType.HELM) {
+            helm = artifact;
+        } else if (artifact.getArtifactType() == ArtifactType.SWORD) {
+            sword = artifact;
+        }
+    }
+
+    public void setEmptyArtifacts() {
+        if (helm == null) {
+            helm = new Artifact(0, true, ArtifactType.HELM);
+        }
+        if (sword == null) {
+            sword = new Artifact(0, true, ArtifactType.SWORD);
+        }
+        if (armor == null) {
+            armor = new Artifact(0, true, ArtifactType.ARMOR);
+        }
+    }
+
+    public void resetEmptyArtifacts() {
+        if (helm.isEmpty()) {
+            helm = null;
+        }
+        if (sword.isEmpty()) {
+            sword = null;
+        }
+        if (armor.isEmpty()) {
+            armor = null;
+        }
+    }
+
+    public Artifact getArtifactOfCurrentType(ArtifactType artifactType) {
+        if (artifactType == ArtifactType.SWORD) {
+            return sword;
+        }
+        if (artifactType == ArtifactType.HELM) {
+            return helm;
+        }
+        return armor;
     }
 }

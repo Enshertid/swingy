@@ -1,6 +1,7 @@
 package swingy.view.console;
 
 import swingy.model.character.Artifact;
+import swingy.model.character.ArtifactType;
 import swingy.model.character.Character;
 import swingy.model.character.Coordinate;
 import swingy.model.character.hero.Hero;
@@ -36,13 +37,13 @@ public class LevelMapConsoleView extends ConsoleView implements LevelMapView {
 
     @Override
     public void printArtifactDescription(Hero character, Artifact artifact) {
-        if (character.getArtifact() != null) {
-            System.out.println("you already have artifact: ");
-            System.out.println(character.getArtifact());
+        if (character.getArtifactOfCurrentType(artifact.getArtifactType()) != null) {
+            System.out.println("you already have: " + artifact.getArtifactType().toString());
+            System.out.println(character.getArtifactOfCurrentType(artifact.getArtifactType()));
         }
         System.out.println("you found new Artifact: ");
         System.out.println(artifact);
-        if (character.getArtifact() != null) {
+        if (character.getArtifactOfCurrentType(artifact.getArtifactType()) != null) {
             System.out.println("do you want to replace it?");
         } else {
             System.out.println("do you want to take artifact?");
@@ -71,8 +72,9 @@ public class LevelMapConsoleView extends ConsoleView implements LevelMapView {
         } else if (objectType.equals(MapObjectType.ENEMY)) {
             System.out.print("X");
         } else {
-            System.out.print("O");
+            System.out.print("o");
         }
+        System.out.print(" ");
     }
 
     @Override
@@ -101,7 +103,7 @@ public class LevelMapConsoleView extends ConsoleView implements LevelMapView {
 
     @Override
     public void printMessageAboutCleanMap() throws InterruptedException {
-        System.out.println("you clean map, and get bonus 500 experience for that!");
+        System.out.println("you clean map, and get bonus 250 experience for that!");
         Thread.sleep(2000);
     }
 

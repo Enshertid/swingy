@@ -21,6 +21,7 @@ public class HeroGenerationController {
         heroGenerationView.welcomePage();
         var hero = heroGenerationView.createHero();
         heroGenerationView.clean();
+        hero.setMaxLevel(mainConfig.getMaxLevel());
         return hero;
     }
 }

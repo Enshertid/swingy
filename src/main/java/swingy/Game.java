@@ -2,12 +2,16 @@ package swingy;
 
 import swingy.controller.HeroGenerationController;
 import swingy.controller.LevelMapController;
-import swingy.model.character.Coordinate;
+import swingy.model.DAO.DAOFactory;
+import swingy.model.DAO.mapper.CharacterMapper;
 import swingy.model.character.hero.Hero;
 import swingy.utils.GameConfig;
 import swingy.utils.ViewMode;
 import swingy.utils.exceptions.BreakGameFromKeyboardException;
 import swingy.utils.exceptions.LooseGameException;
+
+import java.io.IOException;
+import java.util.Properties;
 
 public class Game {
     public static GameConfig mainConfig = new GameConfig();
@@ -18,12 +22,24 @@ public class Game {
         readConfigFileIfItExists();
 
         Hero character = generateCharacter();
+        DAOFactory.getHeroDAO().save(CharacterMapper.toEntity(character));
         LevelMapController levelMapController = new LevelMapController();
 
         launchGameAndHandleResult(character, levelMapController);
     }
 
     private static void readConfigFileIfItExists() {
+        var properties = new Properties();
+        var maxLevel = 15;
+        try {
+            var cl = Game.class.getClassLoader();
+            var inputStream = cl.getResourceAsStream("application.properties");
+//            FileInputStream a = new FileInputStream("application.properties");
+            properties.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mainConfig.setMaxLevel(Integer.parseInt(properties.getProperty("hero.max.level")));
     }
 
     private static void launchGameAndHandleResult(Hero character, LevelMapController levelMapController) {
