@@ -15,26 +15,26 @@ public class HeroPostgresSQLDAO implements Dao<Character> {
     }
 
     @Override
-    public Character getByName(String name) {
+    public Character getById(int id) {
         var query = DAOFactory.getEntityManager()
-                .createQuery("select hero from Character hero where hero.name = :name", Character.class)
-                .setParameter("name", name);
+                .createQuery("select hero from Character hero where hero.id = :id", Character.class)
+                .setParameter("id", id);
         return query.getSingleResult();
     }
 
     @Override
-    public void save(Character object) {
+    public Character save(Character object) {
         DAOFactory.getEntityManager().getTransaction().begin();
         DAOFactory.getEntityManager().persist(object);
         DAOFactory.getEntityManager().getTransaction().commit();
-
+        return object;
     }
 
     @Override
     public void update(Character object) {
         EntityManager entityManager = DAOFactory.getEntityManager();
         entityManager.getTransaction().begin();
-        Query q = entityManager.createQuery("SELECT character FROM Character character where character.name=:name").setParameter("name", object.getName());
+        Query q = entityManager.createQuery("SELECT character FROM Character character where character.id=:id").setParameter("id", object.getId());
         List<Character> resultList = (List<Character>) q.getResultList();
         if (resultList.size() == 0) {
             save(object);

@@ -47,6 +47,7 @@ public class CharacterMapper {
         character.setLevel(hero.getLevel());
         character.setName(hero.getName());
         character.setHp(hero.getHp());
+        character.setId(hero.getId());
         return character;
     }
 }

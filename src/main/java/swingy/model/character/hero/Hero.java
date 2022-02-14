@@ -13,6 +13,7 @@ public class Hero extends Character {
     private int curExperience;
     private int expCupForLevel;
     private int maxLevel;
+    private int id;
 
     public Hero(String name) {
         super(MapObjectType.HERO);
@@ -129,5 +130,13 @@ public class Hero extends Character {
         setDefenceStrength(getDefenceStrength() + 5);
         setExpCupForLevel(getLevel() * 1000 + (getLevel()-1) * (getLevel() - 1) * 450);
         setCurExperience(0);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

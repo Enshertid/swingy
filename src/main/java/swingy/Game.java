@@ -22,7 +22,7 @@ public class Game {
         readConfigFileIfItExists();
 
         Hero character = generateCharacter();
-        DAOFactory.getHeroDAO().save(CharacterMapper.toEntity(character));
+        character.setId(DAOFactory.getHeroDAO().save(CharacterMapper.toEntity(character)).getId());
         LevelMapController levelMapController = new LevelMapController();
 
         launchGameAndHandleResult(character, levelMapController);

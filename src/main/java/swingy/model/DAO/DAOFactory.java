@@ -2,6 +2,9 @@ package swingy.model.DAO;
 
 
 
+import org.hibernate.Session;
+import org.hibernate.cfg.Configuration;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
