@@ -22,7 +22,6 @@ public class Game {
         readConfigFileIfItExists();
 
         Hero character = generateCharacter();
-        character.setId(DAOFactory.getHeroDAO().save(CharacterMapper.toEntity(character)).getId());
         LevelMapController levelMapController = new LevelMapController();
 
         launchGameAndHandleResult(character, levelMapController);
@@ -46,7 +45,11 @@ public class Game {
                 levelMapController.gameCycle(character);
             } catch (BreakGameFromKeyboardException exception) {
                 System.out.println("you break the game, goodbye!");
-                DAOFactory.getHeroDAO().update(CharacterMapper.toEntity(character));
+                if (character.getId() == null) {
+                    DAOFactory.getHeroDAO().save(CharacterMapper.toEntity(character));
+                } else {
+                    DAOFactory.getHeroDAO().update(CharacterMapper.toEntity(character));
+                }
                 System.exit(0);
             } catch (LooseGameException exception) {
                 System.out.println("you loose game, goodbye");

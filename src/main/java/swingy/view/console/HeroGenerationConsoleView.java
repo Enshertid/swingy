@@ -74,7 +74,7 @@ public class HeroGenerationConsoleView extends ConsoleView implements HeroGenera
         System.out.println("you can restore next adventurers:");
         int i = 1;
         for (Hero hero : heroes) {
-            System.out.println("#" + i + " - ");
+            System.out.print("#" + i + " - ");
             System.out.println(hero.toString());
             i++;
         }
@@ -96,7 +96,7 @@ public class HeroGenerationConsoleView extends ConsoleView implements HeroGenera
             }
             number = Integer.parseInt(result);
         } while (number > i);
-        return heroes.get(i - 1);
+        return heroes.get(number - 1);
     }
 
     private boolean isHeroNumberAnswer(String s) {

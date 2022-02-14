@@ -13,7 +13,7 @@ public class Hero extends Character {
     private int curExperience;
     private int expCupForLevel;
     private int maxLevel;
-    private int id;
+    private Integer id;
 
     public Hero(String name) {
         super(MapObjectType.HERO);
@@ -25,6 +25,7 @@ public class Hero extends Character {
         this.setMaxHp(10);
         this.setAttackStrength(5);
         this.setDefenceStrength(5);
+        this.setId(null);
     }
 
     public int getExpCupForLevel() {
@@ -132,11 +133,23 @@ public class Hero extends Character {
         setCurExperience(0);
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                        "==================HERO:==============\n" +
+                        "===== NAME:%20s =====\n" +
+                        "===== LEVEL:%19d =====\n",
+                getName(),
+                getLevel()
+        );
+
     }
 }

@@ -31,15 +31,15 @@ public class CharacterMapper {
         }
 
         if (hero.getHelm() != null) {
-            var helm = ArtifactMapper.toEntity(hero.getArmor());
+            var helm = ArtifactMapper.toEntity(hero.getHelm());
             helm.setHero(character);
             artifacts.add(helm);
         }
 
         if (hero.getSword() != null) {
-            var sword = ArtifactMapper.toEntity(hero.getArmor());
+            var sword = ArtifactMapper.toEntity(hero.getSword());
             sword.setHero(character);
-            artifacts.add(new Artifact());
+            artifacts.add(sword);
         }
 
         if (!artifacts.isEmpty())  {
@@ -52,7 +52,9 @@ public class CharacterMapper {
         character.setLevel(hero.getLevel());
         character.setName(hero.getName());
         character.setHp(hero.getHp());
-        character.setId(hero.getId());
+        if (hero.getId() != null) {
+            character.setId(hero.getId());
+        }
         return character;
     }
 
