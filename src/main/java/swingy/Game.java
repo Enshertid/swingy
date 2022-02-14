@@ -55,7 +55,6 @@ public class Game {
                 exception.printStackTrace();
                 System.exit(1);
             }
-            //method for won game
         }
 
     private static Hero generateCharacter() {

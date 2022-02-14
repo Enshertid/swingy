@@ -53,7 +53,6 @@ public class LevelMapController {
             if (result == ActionResult.GAME_WON) {
                 levelMapView.printWonGame();
                 System.exit(0);
-                // won game
             } else if (result == ActionResult.LEVEL_WON) {
                 isLevelWon = true;
                 if (mapModel.isMapEmpty()) {

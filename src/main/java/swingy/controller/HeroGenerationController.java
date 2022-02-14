@@ -19,7 +19,12 @@ public class HeroGenerationController {
 
     public Hero heroGenerate() throws Exception {
         heroGenerationView.welcomePage();
-        var hero = heroGenerationView.createHero();
+        Hero hero;
+        if (heroGenerationView.isHeroGeneratedOrTakenFromDb()) {
+            hero = heroGenerationView.createHero();
+        } else {
+            hero = heroGenerationView.choiceOldHero();
+        }
         heroGenerationView.clean();
         hero.setMaxLevel(mainConfig.getMaxLevel());
         return hero;

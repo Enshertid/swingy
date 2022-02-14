@@ -8,4 +8,6 @@ import java.io.IOException;
 public interface HeroGenerationView extends View {
     void welcomePage() throws IOException, BreakGameFromKeyboardException;
     Hero createHero() throws Exception;
+    boolean isHeroGeneratedOrTakenFromDb() throws IOException, BreakGameFromKeyboardException;
+    Hero choiceOldHero() throws InterruptedException, IOException;
 }

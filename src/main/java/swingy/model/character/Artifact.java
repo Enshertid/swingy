@@ -3,6 +3,7 @@ package swingy.model.character;
 import swingy.utils.algorithms.random.Randomizers;
 
 public class Artifact {
+    private int id;
     private final ArtifactType artifactType;
     private final int bonus;
     private final boolean isEmpty;
@@ -16,6 +17,20 @@ public class Artifact {
         } else {
             bonus = 0;
         }
+    }
+
+    public Artifact(ArtifactType artifactType, int bonus, boolean isEmpty) {
+        this.artifactType = artifactType;
+        this.bonus = bonus;
+        this.isEmpty = isEmpty;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isEmpty() {

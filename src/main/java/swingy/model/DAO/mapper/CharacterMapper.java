@@ -9,38 +9,43 @@ import java.util.ArrayList;
 
 public class CharacterMapper {
     public static Hero toModel(Character character) {
-        return null;
+        Hero hero = new Hero(character.getName());
+        hero.setId(character.getId());
+        hero.setMaxHp(character.getHp());
+        hero.setHp(character.getHp());
+        hero.setAttackStrength(character.getAttackStrength());
+        hero.setLevel(character.getLevel());
+        hero.setCurExperience(character.getCurExperience());
+        hero.setDefenceStrength(character.getDefenceStrength());
+        character.getArtifacts().forEach(artifact -> hero.setArtifact(ArtifactMapper.toModel(artifact)));
+        return hero;
     }
     public static Character toEntity(Hero hero) {
         var character = new Character();
         var artifacts = new ArrayList<Artifact>();
 
         if (hero.getArmor() != null) {
-            var armor = new Artifact();
-            armor.setArtifactType(ArtifactType.ARMOR);
+            var armor = ArtifactMapper.toEntity(hero.getArmor());
             armor.setHero(character);
-            armor.setBonus(hero.getArmor().getBonus());
             artifacts.add(armor);
         }
 
         if (hero.getHelm() != null) {
-            var helm = new Artifact();
-            helm.setArtifactType(ArtifactType.HELM);
+            var helm = ArtifactMapper.toEntity(hero.getArmor());
             helm.setHero(character);
-            helm.setBonus(hero.getHelm().getBonus());
             artifacts.add(helm);
         }
 
         if (hero.getSword() != null) {
-            var sword = new Artifact();
+            var sword = ArtifactMapper.toEntity(hero.getArmor());
             sword.setHero(character);
-            sword.setBonus(hero.getSword().getBonus());
-            sword.setArtifactType(ArtifactType.SWORD);
             artifacts.add(new Artifact());
         }
+
         if (!artifacts.isEmpty())  {
             character.setArtifacts(artifacts);
         }
+
         character.setAttackStrength(hero.getAttackStrength());
         character.setCurExperience(hero.getCurExperience());
         character.setDefenceStrength(hero.getDefenceStrength());
@@ -50,4 +55,5 @@ public class CharacterMapper {
         character.setId(hero.getId());
         return character;
     }
+
 }

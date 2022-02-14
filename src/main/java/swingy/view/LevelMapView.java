@@ -13,8 +13,6 @@ public interface LevelMapView extends View{
     void printWonGame() throws InterruptedException;
     void printArtifactDescription(Hero character, Artifact artifact);
     void printArtifactSuccessfulPickingUp();
-
     void printMessageAboutCleanMap() throws InterruptedException;
-
     void printLevelUp(int level, int maxLevel) throws InterruptedException;
 }
