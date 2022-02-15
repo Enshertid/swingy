@@ -1,9 +1,8 @@
 package swingy.model.character.hero;
 
 public enum HeroClass {
-    MAGE(1),
-    WARRIOR(2),
-    THIEF(3);
+    WARRIOR(0),
+    THIEF(0);
 
     private final int id;
 

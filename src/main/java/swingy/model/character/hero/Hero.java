@@ -14,6 +14,7 @@ public class Hero extends Character {
     private int expCupForLevel;
     private int maxLevel;
     private Integer id;
+    private HeroClass heroClass;
 
     public Hero(String name) {
         super(MapObjectType.HERO);
@@ -26,6 +27,30 @@ public class Hero extends Character {
         this.setAttackStrength(5);
         this.setDefenceStrength(5);
         this.setId(null);
+    }
+
+    public Hero() {
+        super(MapObjectType.HERO);
+    }
+
+    public Hero(HeroClass heroClass) {
+        super(MapObjectType.HERO);
+        this.curExperience = 0;
+        this.setExpCupForLevel(1000);
+        this.level = 1;
+        if (heroClass.equals(heroClass.WARRIOR)) {
+            this.setHp(10);
+            this.setMaxHp(10);
+            this.setAttackStrength(3);
+            this.setDefenceStrength(5);
+            this.setId(null);
+        } else {
+            this.setHp(10);
+            this.setMaxHp(7);
+            this.setAttackStrength(5);
+            this.setDefenceStrength(3);
+            this.setId(null);
+        }
     }
 
     public int getExpCupForLevel() {
@@ -86,6 +111,14 @@ public class Hero extends Character {
         return getNewCoordinate(offset);
     }
 
+    public HeroClass getHeroClass() {
+        return heroClass;
+    }
+
+    public void setHeroClass(HeroClass heroClass) {
+        this.heroClass = heroClass;
+    }
+
     public ActionResult characterStatusAfterChangeCoordinate(MapModel mapModel, Coordinate coordinate) {
 
         setCoordinate(coordinate);
@@ -125,10 +158,10 @@ public class Hero extends Character {
 
     public void upLevel() {
         setLevel((short) (getLevel() + 1));
-        setHp(getHp() + 10);
-        setMaxHp(getMaxHp() + 10);
-        setAttackStrength(getAttackStrength() + 5);
-        setDefenceStrength(getDefenceStrength() + 5);
+        setMaxHp(getMaxHp() + 3);
+        setHp(getMaxHp() + 3);
+        setAttackStrength(getAttackStrength() + 2);
+        setDefenceStrength(getDefenceStrength() + 2);
         setExpCupForLevel(getLevel() * 1000 + (getLevel()-1) * (getLevel() - 1) * 450);
         setCurExperience(0);
     }
@@ -144,11 +177,15 @@ public class Hero extends Character {
     @Override
     public String toString() {
         return String.format(
-                        "==================HERO:==============\n" +
-                        "===== NAME:%20s =====\n" +
-                        "===== LEVEL:%19d =====\n",
+                """
+                        ==================HERO:==============
+                        ===== NAME:%20s =====
+                        ===== LEVEL:%19d =====
+                        ===== CLASS:%19s =====
+                        """,
                 getName(),
-                getLevel()
+                getLevel(),
+                getHeroClass()
         );
 
     }
