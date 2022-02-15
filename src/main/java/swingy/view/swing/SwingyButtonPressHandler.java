@@ -7,6 +7,7 @@ import swingy.model.map.MapModel;
 import swingy.utils.ActionResult;
 import swingy.utils.Button;
 import swingy.utils.exceptions.BreakGameFromKeyboardException;
+import swingy.utils.map.MapObjectType;
 import swingy.view.ButtonHandler;
 
 import javax.swing.*;
@@ -33,7 +34,9 @@ public class SwingyButtonPressHandler extends JFrame implements ButtonHandler {
 
     @Override
     public ActionResult handleMapMoveClick(Hero hero, MapModel mapModel, Button button) throws IOException, BreakGameFromKeyboardException {
-        mapModel.removeCharacterFromMap(hero.getCoordinate());
+        if (mapModel.getCharacter(hero.getCoordinate()).getMapObjectType().equals(MapObjectType.HERO)) {
+            mapModel.removeCharacterFromMap(hero.getCoordinate());
+        }
         switch (button.getCode()) {
             case 65 -> hero.setCoordinate(new Coordinate(hero.getCoordinate().getX() - 1, hero.getCoordinate().getY()));
             case 87 -> hero.setCoordinate(new Coordinate(hero.getCoordinate().getX(), hero.getCoordinate().getY() - 1));

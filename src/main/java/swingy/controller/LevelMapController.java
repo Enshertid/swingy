@@ -10,6 +10,7 @@ import swingy.utils.ViewMode;
 import swingy.utils.algorithms.RunAlgo;
 import swingy.utils.algorithms.fight.FightAlgo;
 import swingy.utils.algorithms.random.Randomizers;
+import swingy.utils.map.MapObjectType;
 import swingy.view.ButtonHandler;
 import swingy.view.console.ConsoleButtonPressHandler;
 import swingy.utils.exceptions.BreakGameFromKeyboardException;
@@ -56,6 +57,7 @@ public class LevelMapController {
                 character.setCoordinate(new Coordinate(mapModel.getMapSize() / 2, mapModel.getMapSize() / 2));
                 isLevelWon = false;
                 clearScreen();
+                result = ActionResult.NOTHING_IMPORTANT;
             }
 
             printMap(character);
@@ -71,6 +73,7 @@ public class LevelMapController {
                         levelMapView.printLevelUp(character.getLevel(), character.getMaxLevel());
                     }
                 }
+                result = ActionResult.NOTHING_IMPORTANT;
             }else if (result == ActionResult.LOOSE_BATTLE) {
                 throw new LooseGameException("you loose battle, goodbye");
             } else if (result == ActionResult.BREAK_GAME) {
@@ -91,12 +94,13 @@ public class LevelMapController {
     }
 
     private void printMap(Hero character) throws IOException, BreakGameFromKeyboardException, LooseGameException, InterruptedException {
-        mapModel.addCharacterOnMap(character.getCoordinate(), character);
+        if (mapModel.getCharacter(character.getCoordinate()) == null)
+            mapModel.addCharacterOnMap(character.getCoordinate(), character);
         levelMapView.printMap(mapModel,character, this);
     }
 
     public void handleButtonPressings(Hero character, Button button) throws IOException, BreakGameFromKeyboardException, LooseGameException, InterruptedException {
-        var result = buttonPressHandler.handleMapMoveClick(character, mapModel, button);
+        result = buttonPressHandler.handleMapMoveClick(character, mapModel, button);
         if (result.equals(ActionResult.MEET_ENEMY)) {
            result = battleHandling(character);
         }
