@@ -11,7 +11,7 @@ public class FightAlgo {
         hero.setEmptyArtifacts();
         enemy.setEmptyArtifacts();
 
-        int enemylowsHp;
+        int enemyLowsHp;
         int heroLowsHp;
         hero.setHp(hero.getHelm().getBonus() + hero.getHp());
 
@@ -23,11 +23,11 @@ public class FightAlgo {
         }
 
         while (hero.getHp() > 0 || enemy.getHp() > 0) {
-            enemylowsHp = enemy.getDefenceStrength() + enemy.getArmor().getBonus() * Randomizers.isEnemyUseArtifact() - hero.getAttackStrength() - hero.getSword().getBonus();
-            if (enemylowsHp < 0) {
-                enemy.setHp(enemy.getHp() + enemylowsHp);
+            enemyLowsHp = enemy.getDefenceStrength() + enemy.getArmor().getBonus() * Randomizers.isEnemyUseArtifact() - hero.getAttackStrength() - hero.getSword().getBonus();
+            if (enemyLowsHp < 0) {
+                enemy.setHp(enemy.getHp() + enemyLowsHp);
             } else {
-                enemy.setHp(enemy.getHp() - enemylowsHp);
+                enemy.setHp(enemy.getHp() - enemyLowsHp);
             }
            heroLowsHp = hero.getDefenceStrength() + hero.getArmor().getBonus() - enemy.getAttackStrength() - enemy.getSword().getBonus() * Randomizers.isEnemyUseArtifact();
             if (enemy.getHp() < 0) {

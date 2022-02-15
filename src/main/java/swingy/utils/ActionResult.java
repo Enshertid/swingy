@@ -9,5 +9,5 @@ public enum ActionResult {
     TRY_TO_RUN,
     NOTHING_IMPORTANT,
     ARTIFACT,
-    PICK_UP_ARTIFACT;
+    PICK_UP_ARTIFACT, LOOSE_BATTLE, BREAK_GAME;
 }

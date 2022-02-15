@@ -22,7 +22,7 @@ public class Game {
         readConfigFileIfItExists();
 
         Hero character = generateCharacter();
-        LevelMapController levelMapController = new LevelMapController();
+        LevelMapController levelMapController = new LevelMapController(character);
 
         launchGameAndHandleResult(character, levelMapController);
     }

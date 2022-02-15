@@ -5,6 +5,7 @@ import swingy.model.character.Coordinate;
 import swingy.model.character.hero.Hero;
 import swingy.model.map.MapModel;
 import swingy.utils.ActionResult;
+import swingy.utils.Button;
 import swingy.utils.exceptions.BreakGameFromKeyboardException;
 import swingy.view.ButtonHandler;
 
@@ -60,7 +61,7 @@ public class ConsoleButtonPressHandler implements ButtonHandler {
     }
 
     @Override
-    public ActionResult handleMapMoveClick(Hero character, MapModel mapModel) throws IOException, BreakGameFromKeyboardException {
+    public ActionResult handleMapMoveClick(Hero character, MapModel mapModel, Button button) throws IOException, BreakGameFromKeyboardException {
         String input;
 
         while (!isButtonMove(input = bufferedReader.readLine())) {

@@ -1,23 +1,25 @@
 package swingy.view.console;
 
+import swingy.controller.LevelMapController;
 import swingy.model.character.Artifact;
-import swingy.model.character.ArtifactType;
-import swingy.model.character.Character;
 import swingy.model.character.Coordinate;
 import swingy.model.character.hero.Hero;
 import swingy.model.map.MapModel;
-import swingy.utils.FightResult;
+import swingy.utils.exceptions.BreakGameFromKeyboardException;
+import swingy.utils.exceptions.LooseGameException;
 import swingy.utils.map.MapObjectType;
 import swingy.view.LevelMapView;
 
-import java.util.Map;
+import java.io.IOException;
 
 public class LevelMapConsoleView extends ConsoleView implements LevelMapView {
+    private LevelMapController levelMapController;
     public LevelMapConsoleView() {
     }
 
     @Override
-    public void printMap(MapModel mapModel) {
+    public void printMap(MapModel mapModel, Hero character, LevelMapController levelMapController) throws IOException, BreakGameFromKeyboardException, LooseGameException, InterruptedException {
+        this.levelMapController = levelMapController;
         var currentCoordinate = new Coordinate(0,0);
 
         for (int i = 0; i < mapModel.getMapSize(); i++) {
@@ -33,6 +35,7 @@ public class LevelMapConsoleView extends ConsoleView implements LevelMapView {
                 }
             }
         }
+        levelMapController.handleButtonPressings(character, null);
     }
 
     @Override
@@ -58,6 +61,7 @@ public class LevelMapConsoleView extends ConsoleView implements LevelMapView {
 
     @Override
     public void printFightDescription(MapModel mapModel, Hero character) {
+        levelMapController.clearScreen();
         System.out.println("you meet some enemy this is his characteristics");
         mapModel.getCharacter(character.getCoordinate()).printCharacteristics();
         System.out.println("yours characteristics is");
@@ -79,36 +83,42 @@ public class LevelMapConsoleView extends ConsoleView implements LevelMapView {
 
     @Override
     public void printFailedRun() throws InterruptedException {
+        levelMapController.clearScreen();
         System.out.println("YOU TRY TO RUN, BUT YOU FAILED, BATTLE BEGINS");
         Thread.sleep(1000);
     }
 
     @Override
     public void printWonBattle() throws InterruptedException {
+        levelMapController.clearScreen();
         System.out.println("YOU WIN BATTLE");
         Thread.sleep(2000);
     }
 
     @Override
     public void printSuccessRun() throws InterruptedException {
+        levelMapController.clearScreen();
         System.out.println("YOU ARE SUCCESSFUL RUNs");
         Thread.sleep(2000);
     }
 
     @Override
     public void printWonGame() throws InterruptedException {
+        levelMapController.clearScreen();
         System.out.println("YOU WON GAME, CONGRATULATIONS!");
         Thread.sleep(2000);
     }
 
     @Override
     public void printMessageAboutCleanMap() throws InterruptedException {
+        levelMapController.clearScreen();
         System.out.println("you clean map, and get bonus 250 experience for that!");
         Thread.sleep(2000);
     }
 
     @Override
     public void printLevelUp(int level, int maxLevel) throws InterruptedException {
+        levelMapController.clearScreen();
         System.out.println("your current level is " + level + " for won this game, up level to " + maxLevel);
         Thread.sleep(2000);
     }
