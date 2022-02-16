@@ -29,7 +29,7 @@ public class Game {
 
     private static void readConfigFileIfItExists() {
         var properties = new Properties();
-        var maxLevel = 15;
+        mainConfig.setMaxLevel(3);
         try {
             var cl = Game.class.getClassLoader();
             var inputStream = cl.getResourceAsStream("application.properties");
@@ -37,14 +37,17 @@ public class Game {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mainConfig.setMaxLevel(Integer.parseInt(properties.getProperty("hero.max.level")));
+        try {
+            mainConfig.setMaxLevel(Integer.parseInt(properties.getProperty("hero.max.level")));
+        } catch (Exception ex){
+        }
     }
 
     private static void launchGameAndHandleResult(Hero character, LevelMapController levelMapController) {
             try {
                 levelMapController.gameCycle(character);
             } catch (BreakGameFromKeyboardException exception) {
-                System.out.println("you break the game, goodbye!");
+                System.out.println("game will be saved, goodbye!");
                 if (character.getId() == null) {
                     DAOFactory.getHeroDAO().save(CharacterMapper.toEntity(character));
                 } else {

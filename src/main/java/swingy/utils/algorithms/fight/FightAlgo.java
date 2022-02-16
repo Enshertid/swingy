@@ -3,11 +3,12 @@ package swingy.utils.algorithms.fight;
 import swingy.model.character.Artifact;
 import swingy.model.character.Character;
 import swingy.model.character.hero.Hero;
+import swingy.utils.ActionResult;
 import swingy.utils.algorithms.random.Randomizers;
 import swingy.utils.exceptions.LooseGameException;
 
 public class FightAlgo {
-    public static boolean fight(Hero hero, Character enemy) throws LooseGameException {
+    public static ActionResult fight(Hero hero, Character enemy) throws LooseGameException {
         hero.setEmptyArtifacts();
         enemy.setEmptyArtifacts();
 
@@ -51,13 +52,13 @@ public class FightAlgo {
         hero.setCurExperience(hero.getCurExperience() + enemy.getExpForWin());
         if (hero.getCurExperience() >= hero.getExpCupForLevel()) {
             hero.upLevel();
-            return true;
+            return ActionResult.LEVEL_UP;
         }
         if (flag) {
             hero.setAttackStrength(hero.getAttackStrength() - 1
             );
         }
-        return false;
+        return ActionResult.NOTHING_IMPORTANT;
 
     }
 }

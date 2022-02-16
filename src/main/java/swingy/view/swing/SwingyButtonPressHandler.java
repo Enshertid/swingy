@@ -7,6 +7,7 @@ import swingy.model.map.MapModel;
 import swingy.utils.ActionResult;
 import swingy.utils.Button;
 import swingy.utils.exceptions.BreakGameFromKeyboardException;
+import swingy.utils.exceptions.GameWonException;
 import swingy.utils.map.MapObjectType;
 import swingy.view.ButtonHandler;
 
@@ -33,7 +34,10 @@ public class SwingyButtonPressHandler extends JFrame implements ButtonHandler {
     }
 
     @Override
-    public ActionResult handleMapMoveClick(Hero hero, MapModel mapModel, Button button) throws IOException, BreakGameFromKeyboardException {
+    public ActionResult handleMapMoveClick(Hero hero, MapModel mapModel, Button button) throws IOException, BreakGameFromKeyboardException, GameWonException {
+        if (hero.getLevel() >= hero.getMaxLevel()) {
+            throw new GameWonException();
+        }
         if (mapModel.getCharacter(hero.getCoordinate()).getMapObjectType().equals(MapObjectType.HERO)) {
             mapModel.removeCharacterFromMap(hero.getCoordinate());
         }
@@ -42,6 +46,7 @@ public class SwingyButtonPressHandler extends JFrame implements ButtonHandler {
             case 87 -> hero.setCoordinate(new Coordinate(hero.getCoordinate().getX(), hero.getCoordinate().getY() - 1));
             case 68 -> hero.setCoordinate(new Coordinate(hero.getCoordinate().getX() + 1, hero.getCoordinate().getY()));
             case 83 -> hero.setCoordinate(new Coordinate(hero.getCoordinate().getX(), hero.getCoordinate().getY() + 1));
+            case 27 -> throw new BreakGameFromKeyboardException("Save game and exit");
         }
 
         return hero.characterStatusAfterChangeCoordinate(mapModel, hero.getCoordinate());

@@ -78,6 +78,8 @@ public class HeroGenerationSwingyView extends JFrame implements HeroGenerationVi
                 hero[0] = new Hero(HeroClass.WARRIOR);
             } else if (!warriorButton.isSelected() && thiefButton.isSelected()) {
                 hero[0] = new Hero(HeroClass.THIEF);
+            } else if (!warriorButton.isSelected() && !thiefButton.isSelected()) {
+                hero[0] = new Hero(HeroClass.WARRIOR);
             }
             var heroName = name.getText();
             if (heroName.isEmpty())

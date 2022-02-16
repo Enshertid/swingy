@@ -2,8 +2,6 @@ package swingy.model.character;
 
 import swingy.utils.map.MapObjectType;
 
-import java.util.List;
-
 public abstract class Character {
 
     private Coordinate coordinate;
@@ -141,5 +139,10 @@ public abstract class Character {
             return helm;
         }
         return armor;
+    }
+
+    @Override
+    public String toString() {
+        return this.mapObjectType + " hp - " + this.hp + " Attack strength - " + this.attackStrength + " Defence strength - " + this.defenceStrength;
     }
 }

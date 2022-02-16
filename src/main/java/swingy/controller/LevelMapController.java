@@ -10,6 +10,7 @@ import swingy.utils.ViewMode;
 import swingy.utils.algorithms.RunAlgo;
 import swingy.utils.algorithms.fight.FightAlgo;
 import swingy.utils.algorithms.random.Randomizers;
+import swingy.utils.exceptions.GameWonException;
 import swingy.utils.map.MapObjectType;
 import swingy.view.ButtonHandler;
 import swingy.view.console.ConsoleButtonPressHandler;
@@ -37,7 +38,6 @@ public class LevelMapController {
     public LevelMapController(Hero character) {
         mapModel = new MapModel(new HashMap<>(), 0);
         ViewMode viewMode = mainConfig.getViewMode();
-        viewMode = ViewMode.GUI;
         if (viewMode.equals(ViewMode.CONSOLE)) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
             levelMapView = new LevelMapConsoleView();
@@ -49,9 +49,9 @@ public class LevelMapController {
         }
     }
 
-    public void gameCycle(Hero character) throws LooseGameException, IOException, BreakGameFromKeyboardException, InterruptedException {
+    public void gameCycle(Hero character) throws LooseGameException, IOException, BreakGameFromKeyboardException, InterruptedException, GameWonException {
         boolean isLevelWon = true;
-        while (character.getLevel() < character.getMaxLevel()) {
+        while (true) {
             if (isLevelWon) {
                 reloadMap(character.getLevel());
                 character.setCoordinate(new Coordinate(mapModel.getMapSize() / 2, mapModel.getMapSize() / 2));
@@ -62,10 +62,8 @@ public class LevelMapController {
 
             printMap(character);
 
-            if (result == ActionResult.GAME_WON) {
-                levelMapView.printWonGame();
-                System.exit(0);
-            } else if (result == ActionResult.LEVEL_WON) {
+
+            if (result == ActionResult.LEVEL_WON) {
                 isLevelWon = true;
                 if (mapModel.isMapEmpty()) {
                     levelMapView.printMessageAboutCleanMap();
@@ -78,6 +76,11 @@ public class LevelMapController {
                 throw new LooseGameException("you loose battle, goodbye");
             } else if (result == ActionResult.BREAK_GAME) {
                 throw new BreakGameFromKeyboardException("you want to exit and save data, goodbye!");
+            }
+            if (result == ActionResult.GAME_WON || character.getLevel() >= character.getMaxLevel()) {
+                levelMapView.printWonGame();
+                clearScreen();
+                break;
             }
         }
     }
@@ -93,20 +96,30 @@ public class LevelMapController {
         }
     }
 
-    private void printMap(Hero character) throws IOException, BreakGameFromKeyboardException, LooseGameException, InterruptedException {
+    private void printMap(Hero character) throws IOException, BreakGameFromKeyboardException, LooseGameException, InterruptedException, GameWonException {
         if (mapModel.getCharacter(character.getCoordinate()) == null)
             mapModel.addCharacterOnMap(character.getCoordinate(), character);
         levelMapView.printMap(mapModel,character, this);
     }
 
-    public void handleButtonPressings(Hero character, Button button) throws IOException, BreakGameFromKeyboardException, LooseGameException, InterruptedException {
-        result = buttonPressHandler.handleMapMoveClick(character, mapModel, button);
-        if (result.equals(ActionResult.MEET_ENEMY)) {
-           result = battleHandling(character);
+    public void handleButtonPressings(Hero character, Button button) throws IOException, BreakGameFromKeyboardException, LooseGameException, InterruptedException, GameWonException {
+        try {
+            result = buttonPressHandler.handleMapMoveClick(character, mapModel, button);
+            if (result.equals(ActionResult.MEET_ENEMY)) {
+                result = battleHandling(character);
+            }
+        } catch (BreakGameFromKeyboardException exception) {
+            result = ActionResult.BREAK_GAME;
+            throw exception;
+        } catch (LooseGameException looseGameException) {
+            result = ActionResult.LOOSE_BATTLE;
+            throw looseGameException;
+        } catch (GameWonException gameWonException) {
+            result = ActionResult.GAME_WON;
         }
     }
 
-    private ActionResult battleHandling(Hero character) throws IOException, BreakGameFromKeyboardException, InterruptedException, LooseGameException {
+    private ActionResult battleHandling(Hero character) throws IOException, BreakGameFromKeyboardException, InterruptedException, LooseGameException, GameWonException {
         levelMapView.printFightDescription(mapModel, character);
         var choiceRunOfFight = buttonPressHandler.choiceRunOrFight(character, mapModel);
 
@@ -114,8 +127,12 @@ public class LevelMapController {
             if (choiceRunOfFight.equals(ActionResult.TRY_TO_RUN)) {
                 levelMapView.printFailedRun();
             }
-            if (FightAlgo.fight(character, mapModel.getCharacter(character.getCoordinate()))) {
+            if (FightAlgo.fight(character, mapModel.getCharacter(character.getCoordinate())).equals(ActionResult.LEVEL_UP)) {
                 levelMapView.printLevelUp(character.getLevel(), character.getMaxLevel());
+            }
+            if (character.getLevel() >= character.getMaxLevel()) {
+                result = ActionResult.GAME_WON;
+                throw new GameWonException();
             }
             artifactAlgo(character);
             levelMapView.printWonBattle();
@@ -150,5 +167,13 @@ public class LevelMapController {
 
     public void clearScreen() {
         levelMapView.clean();
+    }
+
+    public ActionResult getResult() {
+        return result;
+    }
+
+    public void setResult(ActionResult result) {
+        this.result = result;
     }
 }

@@ -6,6 +6,7 @@ import swingy.model.character.Coordinate;
 import swingy.model.character.hero.Hero;
 import swingy.model.map.MapModel;
 import swingy.utils.exceptions.BreakGameFromKeyboardException;
+import swingy.utils.exceptions.GameWonException;
 import swingy.utils.exceptions.LooseGameException;
 import swingy.utils.map.MapObjectType;
 import swingy.view.LevelMapView;
@@ -18,7 +19,7 @@ public class LevelMapConsoleView extends ConsoleView implements LevelMapView {
     }
 
     @Override
-    public void printMap(MapModel mapModel, Hero character, LevelMapController levelMapController) throws IOException, BreakGameFromKeyboardException, LooseGameException, InterruptedException {
+    public void printMap(MapModel mapModel, Hero character, LevelMapController levelMapController) throws IOException, BreakGameFromKeyboardException, LooseGameException, InterruptedException, GameWonException {
         this.levelMapController = levelMapController;
         var currentCoordinate = new Coordinate(0,0);
 

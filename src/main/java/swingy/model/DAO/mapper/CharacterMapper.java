@@ -17,6 +17,7 @@ public class CharacterMapper {
         hero.setLevel(character.getLevel());
         hero.setCurExperience(character.getCurExperience());
         hero.setDefenceStrength(character.getDefenceStrength());
+        hero.setHeroClass(character.getHeroClass());
         character.getArtifacts().forEach(artifact -> hero.setArtifact(ArtifactMapper.toModel(artifact)));
         return hero;
     }
@@ -52,6 +53,7 @@ public class CharacterMapper {
         character.setLevel(hero.getLevel());
         character.setName(hero.getName());
         character.setHp(hero.getHp());
+        character.setHeroClass(hero.getHeroClass());
         if (hero.getId() != null) {
             character.setId(hero.getId());
         }

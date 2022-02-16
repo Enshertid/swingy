@@ -17,8 +17,7 @@ public class HeroGenerationController {
     HeroGenerationView heroGenerationView;
 
     public HeroGenerationController() {
-//        ViewMode viewMode = mainConfig.getViewMode();
-        ViewMode viewMode = ViewMode.GUI;
+        ViewMode viewMode = mainConfig.getViewMode();
         if (viewMode.equals(ViewMode.CONSOLE)) {
             heroGenerationView = new HeroGenerationConsoleView();
         } else {

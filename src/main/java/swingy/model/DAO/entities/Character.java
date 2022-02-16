@@ -2,6 +2,7 @@ package swingy.model.DAO.entities;
 
 import lombok.Data;
 import lombok.NonNull;
+import swingy.model.character.hero.HeroClass;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +14,6 @@ public class Character {
     @Id
     @Column(name = "character_id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @SequenceGenerator(name = "characterSequence", sequenceName = "character", allocationSize = 1, initialValue = 1)
     private int id;
 
     @Column(name = "character_name")
@@ -36,4 +36,8 @@ public class Character {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "hero")
     private List<Artifact> artifacts;
+
+    @Enumerated
+    @Column(name = "hero_class")
+    private HeroClass heroClass;
 }
